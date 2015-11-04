@@ -40,6 +40,7 @@
 //method này dùng để ghi nội dung xuống file ChecklistItems.
 //Đầu tiên lấy nội dung từ mảng _items, sau đó ghi nó xuống file ChecklistItems
 //archiver dùng để tạo 1 file dạng .plist, sau đó encodes mảng _items sang dữ liệu nhị phân để có thể viết xuống file Checklists
+//............test git hub..........
 -(void)saveChecklistItems {
     NSMutableData *data = [[NSMutableData alloc] init];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];

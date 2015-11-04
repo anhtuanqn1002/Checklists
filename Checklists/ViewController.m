@@ -52,7 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    NSLog(@"Documents folder is %@", [self documentsDirectory]);
+    NSLog(@"Documents folder2 is %@", [self documentsDirectory]);
     NSLog(@"Data file path is %@", [self dataFilePath]);
     _items = [[NSMutableArray alloc] initWithCapacity:20];
     

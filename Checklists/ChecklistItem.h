@@ -10,7 +10,7 @@
 
 @interface ChecklistItem : NSObject <NSCoding>
 
-@property (nonatomic, copy) NSString *text;
+@property (nonatomic, strong) NSString *text;
 @property (nonatomic, assign) BOOL checked;
 -(void)toggleChecked;
 @end

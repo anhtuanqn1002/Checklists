@@ -75,6 +75,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.title = self.checklist.name;
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -140,7 +141,7 @@
 -(void)itemDetailViewController:(ItemDetailViewController *)controller didFinishAddingItem:(ChecklistItem *)item{
     NSInteger newRowIndex = [self.checklist.items count];
     [self.checklist.items addObject:item];
-    
+
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:newRowIndex inSection:0];
     NSArray *indexPaths = @[indexPath];
     [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];

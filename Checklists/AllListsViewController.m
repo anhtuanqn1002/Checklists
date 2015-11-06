@@ -41,7 +41,7 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    
+    NSLog(@"%@",[self dataFilePath]);
     Checklist *checklist = _lists[indexPath.row];
     cell.textLabel.text = checklist.name;
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
@@ -58,35 +58,42 @@
 }
 
 #pragma mark - Loading data
--(id)initWithCoder:(NSCoder *)aDecoder {
+
+-(id)initWithCoder:(NSCoder *)aDecoder{
     if ((self = [super initWithCoder:aDecoder])) {
-        _lists = [[NSMutableArray alloc] initWithCapacity:20];
-        Checklist *list;
-        
-        list = [[Checklist alloc] init];
-        list.name = @"Birthdays";
-        [_lists addObject:list];
-        
-        list = [[Checklist alloc] init];
-        list.name = @"Groceries";
-        [_lists addObject:list];
-        
-        list = [[Checklist alloc] init];
-        list.name = @"Cool Apps";
-        [_lists addObject:list];
-        
-        list = [[Checklist alloc] init];
-        list.name = @"To Do";
-        [_lists addObject:list];
-        
-        for (Checklist *list in _lists) {
-            ChecklistItem *item = [[ChecklistItem alloc] init];
-            item.text = [NSString stringWithFormat:@"Item for %@", list.name];
-            [list.items addObject:item];
-        }
+        [self loadChecklistItems];
     }
     return self;
 }
+//-(id)initWithCoder:(NSCoder *)aDecoder {
+//    if ((self = [super initWithCoder:aDecoder])) {
+//        _lists = [[NSMutableArray alloc] initWithCapacity:20];
+//        Checklist *list;
+//        
+//        list = [[Checklist alloc] init];
+//        list.name = @"Birthdays";
+//        [_lists addObject:list];
+//        
+//        list = [[Checklist alloc] init];
+//        list.name = @"Groceries";
+//        [_lists addObject:list];
+//        
+//        list = [[Checklist alloc] init];
+//        list.name = @"Cool Apps";
+//        [_lists addObject:list];
+//        
+//        list = [[Checklist alloc] init];
+//        list.name = @"To Do";
+//        [_lists addObject:list];
+//        
+//        for (Checklist *list in _lists) {
+//            ChecklistItem *item = [[ChecklistItem alloc] init];
+//            item.text = [NSString stringWithFormat:@"Item for %@", list.name];
+//            [list.items addObject:item];
+//        }
+//    }
+//    return self;
+//}
 
 #pragma mark - Take a delegate
 
@@ -152,6 +159,54 @@
     Checklist *checklist = _lists[indexPath.row];
     controller.checklistToEdit = checklist;
     [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+//lấy đường dẫn thư mục chứa dữ liệu
+-(NSString *)documentsDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths firstObject];
+    NSLog(@"%@", documentDirectory);
+    return documentDirectory;
+}
+//lấy đường dẫn thư mục ở documentsDirectory ở trên + tên file dữ liệu là "Checklists.plist" để thành 1 đường dẫn hoàn thiện
+//method này tương đương với việc ghép 2 chuỗi lại với nhau, ta có thể dùng stringWithFormat thay cho phương thức ở dưới.
+-(NSString *)dataFilePath {
+    //có thể gọi như sau để thay câu lệnh bên dưới
+    //return [NSString stringWithFormat:@"%@/Checklists.plist", [self documentsDirectory]];
+    return [[self documentsDirectory] stringByAppendingPathComponent:@"Checklists.plist"];
+}
+
+//method này dùng để ghi nội dung xuống file ChecklistItems.
+//Đầu tiên lấy nội dung từ mảng _items, sau đó ghi nó xuống file ChecklistItems
+//archiver dùng để tạo 1 file dạng .plist, sau đó encodes mảng _items sang dữ liệu nhị phân để có thể viết xuống file Checklists
+//............test git hub..........
+-(void)saveChecklist {
+    NSMutableData *data = [[NSMutableData alloc] init];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    [archiver encodeObject:_lists forKey:@"ChecklistItems"];
+    [archiver finishEncoding];
+    [data writeToFile:[self dataFilePath] atomically:YES];
+}
+-(void)loadChecklistItems {
+
+    //lấy đường dẫn file dữ liệu
+    NSString *path = [self dataFilePath];
+
+    /*Kiểm tra
+      nếu như: file dữ liệu tồn tại thì tiến hành
+        - tạo đối tượng data, tải nội dung file vào data.
+        - tạo đối tượng unarchiver từ data, sau đó dùng unarchiver để decode đống dữ liệu đó sang mảng _items
+      ngược lại thì: tạo 1 mảng động với 20 phần tử rỗng
+     */
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+
+        _lists = [unarchiver decodeObjectForKey:@"ChecklistItems"];
+        [unarchiver finishDecoding];
+    } else {
+        _lists = [[NSMutableArray alloc] initWithCapacity:20];
+    }
 }
 
 

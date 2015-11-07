@@ -8,9 +8,12 @@
 
 #import "AppDelegate.h"
 #import "AllListsViewController.h"
+#import "DataModel.h"
 
 @interface AppDelegate ()
-
+{
+    DataModel *_dataModel;
+}
 @end
 
 @implementation AppDelegate
@@ -18,6 +21,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    //khởi tạo _dataModel
+    _dataModel = [[DataModel alloc] init];
+    
+    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+    AllListsViewController *controller = navigationController.viewControllers[0];
+    controller.dataModel = _dataModel;
     return YES;
 }
 
@@ -27,9 +36,7 @@
 }
 
 -(void)saveData {
-    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    AllListsViewController *controller = navigationController.viewControllers[0];
-    [controller saveChecklist];
+    [_dataModel saveChecklist];
 }
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.

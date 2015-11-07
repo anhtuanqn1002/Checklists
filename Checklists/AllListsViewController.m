@@ -9,11 +9,10 @@
 #import "AllListsViewController.h"
 #import "ViewController.h"
 #import "ChecklistItem.h"
+#import "DataModel.h"
 
 @implementation AllListsViewController
-{
-    NSMutableArray *_lists;
-}
+
 -(void)viewDidLoad {
     [super viewDidLoad];
     //[self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
@@ -21,7 +20,7 @@
 
 //phương thức này để xác định section nào có bao nhiêu row. Vì chỉ có 1 section nên hiện tại return về 3 row mặc định
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_lists count];
+    return [self.dataModel.lists count];
 }
 
 //phương thức và phương thức trên tự động chạy khi bắt đầu sử dụng màn hình table view
@@ -41,8 +40,8 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    NSLog(@"%@",[self dataFilePath]);
-    Checklist *checklist = _lists[indexPath.row];
+    //NSLog(@"%@",[self dataFilePath]);
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
     cell.textLabel.text = checklist.name;
     cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 
@@ -52,48 +51,11 @@
 //phương thức sẽ xử lý sự kiện chọn vào 1 row nào đó
 //khi chọn vào 1 row nào đó nó sẽ show cái màn hình checklist ra (chuyển từ all list sang 1 checklist đơn)
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    Checklist *checklist = _lists[indexPath.row];
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
     //đối tượng sender được gửi đi sẽ vào method prepareForSegue chờ xử lý chứ nó không phải chuyển sender qua cái view khác.
     [self performSegueWithIdentifier:@"ShowChecklist" sender:checklist];
 }
 
-#pragma mark - Loading data
-
--(id)initWithCoder:(NSCoder *)aDecoder{
-    if ((self = [super initWithCoder:aDecoder])) {
-        [self loadChecklistItems];
-    }
-    return self;
-}
-//-(id)initWithCoder:(NSCoder *)aDecoder {
-//    if ((self = [super initWithCoder:aDecoder])) {
-//        _lists = [[NSMutableArray alloc] initWithCapacity:20];
-//        Checklist *list;
-//        
-//        list = [[Checklist alloc] init];
-//        list.name = @"Birthdays";
-//        [_lists addObject:list];
-//        
-//        list = [[Checklist alloc] init];
-//        list.name = @"Groceries";
-//        [_lists addObject:list];
-//        
-//        list = [[Checklist alloc] init];
-//        list.name = @"Cool Apps";
-//        [_lists addObject:list];
-//        
-//        list = [[Checklist alloc] init];
-//        list.name = @"To Do";
-//        [_lists addObject:list];
-//        
-//        for (Checklist *list in _lists) {
-//            ChecklistItem *item = [[ChecklistItem alloc] init];
-//            item.text = [NSString stringWithFormat:@"Item for %@", list.name];
-//            [list.items addObject:item];
-//        }
-//    }
-//    return self;
-//}
 
 #pragma mark - Take a delegate
 
@@ -119,8 +81,8 @@
 }
 
 -(void)listDetailViewController:(ListDetailViewController *)controller didFinishAddingChecklist:(Checklist *)checklist {
-    NSInteger newRowIndex = [_lists count];
-    [_lists addObject:checklist];
+    NSInteger newRowIndex = [self.dataModel.lists count];
+    [self.dataModel.lists addObject:checklist];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:newRowIndex inSection:0];
     NSArray *indexPaths = @[indexPath];
@@ -129,7 +91,7 @@
 }
 
 -(void)listDetailViewController:(ListDetailViewController *)controller didFinishEditingChecklist:(Checklist *)checklist {
-    NSInteger index = [_lists indexOfObject:checklist];
+    NSInteger index = [self.dataModel.lists indexOfObject:checklist];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -139,7 +101,7 @@
 
 //delete a row at the AllListView
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    [_lists removeObjectAtIndex:indexPath.row];
+    [self.dataModel.lists removeObjectAtIndex:indexPath.row];
     NSArray *indexPaths = @[indexPath];
     [tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
@@ -156,59 +118,9 @@
     controller.delegate = self;
     
     //lấy checklist tương ứng ra từ _lists, sau đó sửa thông tin đối tượng checklistToEdit. Cuối cùng là show nội dung của view hiện tại
-    Checklist *checklist = _lists[indexPath.row];
+    Checklist *checklist = self.dataModel.lists[indexPath.row];
     controller.checklistToEdit = checklist;
     [self presentViewController:navigationController animated:YES completion:nil];
 }
-
-//lấy đường dẫn thư mục chứa dữ liệu
--(NSString *)documentsDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentDirectory = [paths firstObject];
-    //NSLog(@"%@", documentDirectory);
-    return documentDirectory;
-}
-//lấy đường dẫn thư mục ở documentsDirectory ở trên + tên file dữ liệu là "Checklists.plist" để thành 1 đường dẫn hoàn thiện
-//method này tương đương với việc ghép 2 chuỗi lại với nhau, ta có thể dùng stringWithFormat thay cho phương thức ở dưới.
--(NSString *)dataFilePath {
-    //có thể gọi như sau để thay câu lệnh bên dưới
-    //return [NSString stringWithFormat:@"%@/Checklists.plist", [self documentsDirectory]];
-    return [[self documentsDirectory] stringByAppendingPathComponent:@"Checklists.plist"];
-}
-
-//method này dùng để ghi nội dung xuống file ChecklistItems.
-//Đầu tiên lấy nội dung từ mảng _items, sau đó ghi nó xuống file ChecklistItems
-//archiver dùng để tạo 1 file dạng .plist, sau đó encodes mảng _items sang dữ liệu nhị phân để có thể viết xuống file Checklists
-//............test git hub..........
--(void)saveChecklist {
-    NSMutableData *data = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-    [archiver encodeObject:_lists forKey:@"ChecklistItems"];
-    [archiver finishEncoding];
-    [data writeToFile:[self dataFilePath] atomically:YES];
-}
--(void)loadChecklistItems {
-
-    //lấy đường dẫn file dữ liệu
-    NSString *path = [self dataFilePath];
-
-    /*Kiểm tra
-      nếu như: file dữ liệu tồn tại thì tiến hành
-        - tạo đối tượng data, tải nội dung file vào data.
-        - tạo đối tượng unarchiver từ data, sau đó dùng unarchiver để decode đống dữ liệu đó sang mảng _items
-      ngược lại thì: tạo 1 mảng động với 20 phần tử rỗng
-     */
-    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
-        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-
-        _lists = [unarchiver decodeObjectForKey:@"ChecklistItems"];
-        [unarchiver finishDecoding];
-    } else {
-        _lists = [[NSMutableArray alloc] initWithCapacity:20];
-    }
-}
-
-
 
 @end

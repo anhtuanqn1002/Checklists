@@ -18,6 +18,7 @@
 		36E9415B1BE7363600DD3107 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36E941591BE7363600DD3107 /* Main.storyboard */; };
 		36E9415D1BE7363600DD3107 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36E9415C1BE7363600DD3107 /* Assets.xcassets */; };
 		36E941601BE7363600DD3107 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36E9415E1BE7363600DD3107 /* LaunchScreen.storyboard */; };
+		36F63CD41BED8F6E003AF597 /* DataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 36F63CD31BED8F6E003AF597 /* DataModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,8 @@
 		36E9415C1BE7363600DD3107 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		36E9415F1BE7363600DD3107 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		36E941611BE7363600DD3107 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		36F63CD21BED8F6E003AF597 /* DataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataModel.h; sourceTree = "<group>"; };
+		36F63CD31BED8F6E003AF597 /* DataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +84,8 @@
 				36796D331BEB2F9A00E6C152 /* ListDetailViewController.m */,
 				36E591601BE84CCE006C6EAB /* ChecklistItem.h */,
 				36E591611BE84CCE006C6EAB /* ChecklistItem.m */,
+				36F63CD21BED8F6E003AF597 /* DataModel.h */,
+				36F63CD31BED8F6E003AF597 /* DataModel.m */,
 				36E941591BE7363600DD3107 /* Main.storyboard */,
 				36796D2F1BEAF6D800E6C152 /* Checklist.h */,
 				36796D301BEAF6D800E6C152 /* Checklist.m */,
@@ -176,6 +181,7 @@
 			files = (
 				36E941581BE7363500DD3107 /* ViewController.m in Sources */,
 				36E941551BE7363500DD3107 /* AppDelegate.m in Sources */,
+				36F63CD41BED8F6E003AF597 /* DataModel.m in Sources */,
 				36796D2E1BEAE78600E6C152 /* AllListsViewController.m in Sources */,
 				36796D341BEB2F9A00E6C152 /* ListDetailViewController.m in Sources */,
 				36E941521BE7363500DD3107 /* main.m in Sources */,

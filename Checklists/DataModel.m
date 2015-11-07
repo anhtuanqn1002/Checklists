@@ -7,7 +7,7 @@
 //
 
 #import "DataModel.h"
-
+#import "Checklist.h"
 @implementation DataModel
 
 //lấy đường dẫn thư mục chứa dữ liệu
@@ -63,12 +63,16 @@
     if ((self = [super init])) {
         [self loadChecklists];
         [self registerDefaults];
+        [self handleFirstTime];
     }
     return self;
 }
 //method này chạy để đăng kí giá trị mặc định cho key ChecklistIndex. Khi mới chạy ứng dụng đầu tiên luôn thì giá trị mặc định cho key là -1
 -(void)registerDefaults {
-    NSDictionary *dictionary = @{@"ChecklistIndex": @-1};
+    NSDictionary *dictionary = @{
+                                 @"ChecklistIndex": @-1,
+                                 @"FirstTime": @YES
+                                 };
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
 }
 
@@ -77,5 +81,18 @@
 }
 -(void)setIndexOfSelectedChecklist:(NSInteger)index {
     [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"ChecklistIndex"];
+}
+
+-(void)handleFirstTime {
+    BOOL firstTime = [[NSUserDefaults standardUserDefaults] boolForKey:@"FirstTime"];
+    if (firstTime) {
+        Checklist *checklist = [[Checklist alloc] init];
+        checklist.name = @"List";
+        
+        [self.lists addObject:checklist];
+        [self setIndexOfSelectedChecklist:0];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstTime"];
+    }
 }
 @end

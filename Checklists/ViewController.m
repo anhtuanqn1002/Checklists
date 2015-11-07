@@ -125,7 +125,7 @@
                      withChecklistItem:(ChecklistItem *)item{
     UILabel *label = (UILabel *)[cell viewWithTag:1001];
     
-    if (item.checked) {
+    if (item.checked == YES) {
         label.text = @"√";
     } else {
         label.text = @"";

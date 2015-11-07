@@ -19,13 +19,13 @@
 //tham số forKey để cho đối tượng aCoder hiểu (ví dụ như self.text là của @"Text") để phục vụ việc đọc ghi dữ liệu sau này
 -(void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.text forKey:@"Text"];
-    [aCoder encodeBool:self.checked forKey:@"Checker"];
+    [aCoder encodeBool:self.checked forKey:@"Checked"];
 }
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
     if ((self = [super init])) {
         self.text = [aDecoder decodeObjectForKey:@"Text"];
-        self.checked = [aDecoder decodeObjectForKey:@"Checked"];
+        self.checked = [aDecoder decodeBoolForKey:@"Checked"];
     }
     return self;
 }

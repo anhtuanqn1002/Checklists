@@ -165,7 +165,7 @@
 -(NSString *)documentsDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDirectory = [paths firstObject];
-    NSLog(@"%@", documentDirectory);
+    //NSLog(@"%@", documentDirectory);
     return documentDirectory;
 }
 //lấy đường dẫn thư mục ở documentsDirectory ở trên + tên file dữ liệu là "Checklists.plist" để thành 1 đường dẫn hoàn thiện

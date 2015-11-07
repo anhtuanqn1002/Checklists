@@ -51,6 +51,10 @@
 //phương thức sẽ xử lý sự kiện chọn vào 1 row nào đó
 //khi chọn vào 1 row nào đó nó sẽ show cái màn hình checklist ra (chuyển từ all list sang 1 checklist đơn)
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    //khi người dùng chọn 1 row trên table view controller thì ta lưu lại vị trí row được chọn với key là ChecklistIndex.
+    //để khi bắt đầu chạy lại ứng dụng sau khi off thì nó sẽ lấy giá trị row hiện tại ra và show như lúc trước khi tắt ứng dụng.
+    [self.dataModel setIndexOfSelectedChecklist:indexPath.row];
+    
     Checklist *checklist = self.dataModel.lists[indexPath.row];
     //đối tượng sender được gửi đi sẽ vào method prepareForSegue chờ xử lý chứ nó không phải chuyển sender qua cái view khác.
     [self performSegueWithIdentifier:@"ShowChecklist" sender:checklist];
@@ -121,6 +125,27 @@
     Checklist *checklist = self.dataModel.lists[indexPath.row];
     controller.checklistToEdit = checklist;
     [self presentViewController:navigationController animated:YES completion:nil];
+}
+
+//khi back trở lại view khác, thì delegate nó sẽ thông báo cho thằng này là đã qua view khác rồi, vậy nên giá trị key ChecklistIndex sẽ được thay = -1 (không chọn)
+-(void)navigationController:(UINavigationController *)navigationController willShowViewController:(nonnull UIViewController *)viewController animated:(BOOL)animated {
+    if (viewController == self) {
+        [self.dataModel setIndexOfSelectedChecklist:-1];
+    }
+}
+
+//Sau khi lưu thông tin vào NSUserDefaults. Mỗi khi chạy lại ứng dụng ta sẽ xét có row nào trước đó đc lưu lại không, nếu có thì show vào chỗ đó ngay
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    //dòng này uỷ thác việc xử lý khi chuẩn bị show view ra cho thằng này
+    self.navigationController.delegate = self;
+    
+    NSInteger index = [self.dataModel indexOfSelectedChecklist];
+    if (index >= 0 && index < [self.dataModel.lists count]) {
+        Checklist *checklist = self.dataModel.lists[index];
+        //nếu như có cái row trước khi ứng dụng tắt được chọn thì show ngay cái row đó ra
+        [self performSegueWithIdentifier:@"ShowChecklist" sender:checklist];
+    }
 }
 
 @end

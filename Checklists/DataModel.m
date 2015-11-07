@@ -62,7 +62,20 @@
 -(id)init {
     if ((self = [super init])) {
         [self loadChecklists];
+        [self registerDefaults];
     }
     return self;
+}
+//method này chạy để đăng kí giá trị mặc định cho key ChecklistIndex. Khi mới chạy ứng dụng đầu tiên luôn thì giá trị mặc định cho key là -1
+-(void)registerDefaults {
+    NSDictionary *dictionary = @{@"ChecklistIndex": @-1};
+    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+}
+
+-(NSInteger)indexOfSelectedChecklist {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"ChecklistIndex"];
+}
+-(void)setIndexOfSelectedChecklist:(NSInteger)index {
+    [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"ChecklistIndex"];
 }
 @end

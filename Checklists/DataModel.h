@@ -13,5 +13,7 @@
 @property (nonatomic, strong) NSMutableArray *lists;
 
 -(void)saveChecklist;
+-(NSInteger)indexOfSelectedChecklist;
+-(void)setIndexOfSelectedChecklist:(NSInteger)index;
 
 @end

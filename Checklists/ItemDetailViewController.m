@@ -87,9 +87,11 @@
 }
 
 -(void)showDatePicker {
-    _datePickerVisible = YES;
-    NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
-    [self.tableView insertRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+    if (!_datePickerVisible) {
+        _datePickerVisible = YES;
+        NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
+        [self.tableView insertRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+    }
 }
 //method này có tác dụng cập nhật giá trị dueDateLabel
 - (void)updateDueDateLable {

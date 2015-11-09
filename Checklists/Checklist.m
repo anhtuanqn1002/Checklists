@@ -7,6 +7,7 @@
 //
 
 #import "Checklist.h"
+#import "ChecklistItem.h"
 
 @implementation Checklist
 
@@ -31,4 +32,15 @@
     }
     return self;
 }
+
+-(int)countUncheckedItems {
+    int count = 0;
+    for (ChecklistItem *item in self.items) {
+        if (!item.checked ) {
+            count += 1;
+        }
+    }
+    return count;
+}
+
 @end

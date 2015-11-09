@@ -101,6 +101,7 @@
     UILabel *label = (UILabel*)[cell viewWithTag:1000];
     label.text = item.text;
     
+    
     [self configureCheckmarkForCell:cell withChecklistItem:item];
     [self configureTextForCell:cell withChecklistItem:item];
     
@@ -124,7 +125,7 @@
 -(void)configureCheckmarkForCell:(UITableViewCell *)cell
                      withChecklistItem:(ChecklistItem *)item{
     UILabel *label = (UILabel *)[cell viewWithTag:1001];
-    
+    label.textColor= self.view.tintColor;
     if (item.checked == YES) {
         label.text = @"√";
     } else {

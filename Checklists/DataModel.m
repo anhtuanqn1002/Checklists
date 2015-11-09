@@ -95,4 +95,9 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"FirstTime"];
     }
 }
+
+//dùng để sort danh sách checklist. @selector ta phải định nghĩa 1 method tên là compare: ở trong đối tượng Checklist để biết sẽ sort theo tiêu chí nào.
+-(void)sortChecklists {
+    [self.lists sortUsingSelector:@selector(compare:)];
+}
 @end

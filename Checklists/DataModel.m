@@ -71,7 +71,8 @@
 -(void)registerDefaults {
     NSDictionary *dictionary = @{
                                  @"ChecklistIndex": @-1,
-                                 @"FirstTime": @YES
+                                 @"FirstTime": @YES,
+                                 @"ChecklistItemId": @0
                                  };
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
 }
@@ -99,5 +100,13 @@
 //dùng để sort danh sách checklist. @selector ta phải định nghĩa 1 method tên là compare: ở trong đối tượng Checklist để biết sẽ sort theo tiêu chí nào.
 -(void)sortChecklists {
     [self.lists sortUsingSelector:@selector(compare:)];
+}
+
++(int)nextChecklistItemId {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSInteger itemId = [userDefaults integerForKey:@"ChecklistItemId"];
+    [userDefaults setInteger:itemId+1 forKey:@"ChecklistItemId"];
+    [userDefaults synchronize];
+    return (int)itemId;
 }
 @end

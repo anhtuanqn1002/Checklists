@@ -27,6 +27,7 @@
 @property (nonatomic, strong) Checklist* checklistToEdit;
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 
+
 -(IBAction)cancel;
 -(IBAction)done;
 

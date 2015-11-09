@@ -27,6 +27,19 @@
     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
     AllListsViewController *controller = navigationController.viewControllers[0];
     controller.dataModel = _dataModel;
+    
+    //khởi tạo local notifications
+    //khi khởi tạo 1 notification thì phải set giá trị fireDate cho nó, giá trị này quy định thời gian hiện notification.
+    //Trong ví dụ này set nó là 10s kể từ khi bắt đầu chạy app.
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:10];
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.fireDate = date;
+    localNotification.timeZone = [NSTimeZone defaultTimeZone];
+    localNotification.alertBody = @"I am a local notification!";
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    
     return YES;
 }
 
@@ -56,5 +69,10 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     [self saveData];
 }
+
+-(void)application:(UIApplication *)application didReceiveLocalNotification:(nonnull UILocalNotification *)notification {
+    NSLog(@"didReceiveLocalNotification %@", notification);
+}
+
 
 @end

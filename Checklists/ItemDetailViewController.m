@@ -9,6 +9,16 @@
 #import "ItemDetailViewController.h"
 #import "ChecklistItem.h"
 @implementation ItemDetailViewController
+{
+    NSDate *_dueDate;
+}
+//method này có tác dụng cập nhật giá trị dueDateLabel
+- (void)updateDueDateLable {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    self.dueDateLabel.text = [formatter stringFromDate:_dueDate];
+}
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -18,7 +28,16 @@
         self.textField.text = self.itemToEdit.text;
         self.doneBarButton.enabled = YES;
         //NSLog(@"chay vao edit item");
+        
+        //set giá trị cho switchControl = giá trị shouldRemind
+        //nếu là add thì ta gán switchControl = NO;
+        self.switchControl.on = self.itemToEdit.shouldRemind;
+        _dueDate = self.itemToEdit.dueDate;
+    } else {
+        self.switchControl.on = NO;
+        _dueDate = [NSDate date];
     }
+    [self updateDueDateLable];
 }
 
 #pragma mark - Table view data source
@@ -32,9 +51,17 @@
         ChecklistItem *item = [[ChecklistItem alloc] init];
         item.text = self.textField.text;
         item.checked = NO;
+        
+        item.shouldRemind = self.switchControl.on;
+        item.dueDate = _dueDate;
+        
         [self.delegate itemDetailViewController:self didFinishAddingItem:item];
     } else {
         self.itemToEdit.text = self.textField.text;
+        
+        self.itemToEdit.shouldRemind = self.switchControl.on;
+        self.itemToEdit.dueDate = _dueDate;
+        
         [self.delegate itemDetailViewController:self didFinishEditingItem:self.itemToEdit];
     }
 }

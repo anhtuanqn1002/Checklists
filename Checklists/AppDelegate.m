@@ -28,6 +28,10 @@
     AllListsViewController *controller = navigationController.viewControllers[0];
     controller.dataModel = _dataModel;
     
+    // register notification types
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    
     //khởi tạo local notifications
     //khi khởi tạo 1 notification thì phải set giá trị fireDate cho nó, giá trị này quy định thời gian hiện notification.
     //Trong ví dụ này set nó là 10s kể từ khi bắt đầu chạy app.

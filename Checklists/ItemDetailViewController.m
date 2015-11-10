@@ -14,6 +14,10 @@
     BOOL _datePickerVisible;
 }
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self hideDatePicker];
+}
+
 -(NSInteger)tableView:(UITableView *)tableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 2) {
         NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:0 inSection:indexPath.section];
@@ -36,7 +40,11 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.textField resignFirstResponder];
     if (indexPath.section == 1 && indexPath.row == 1) {
-        [self showDatePicker];
+        if (!_datePickerVisible) {
+            [self showDatePicker];
+        } else {
+            [self hideDatePicker];
+        }
     }
 }
 
@@ -87,10 +95,31 @@
 }
 
 -(void)showDatePicker {
-    if (!_datePickerVisible) {
-        _datePickerVisible = YES;
+    _datePickerVisible = YES;
+    NSIndexPath *indexPathDateRow = [NSIndexPath indexPathForRow:1 inSection:1];
+    NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPathDateRow];
+    cell.detailTextLabel.textColor = cell.detailTextLabel.tintColor;
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPathDateRow] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+    
+    UITableViewCell *datePickerCell = [self.tableView cellForRowAtIndexPath:indexPathDatePicker];
+    UIDatePicker *datePicker = (UIDatePicker *) [datePickerCell viewWithTag:100];
+    [datePicker setDate:_dueDate animated:NO];
+}
+-(void)hideDatePicker {
+    if (_datePickerVisible) {
+        _datePickerVisible = NO;
+        NSIndexPath *indexPathDateRow = [NSIndexPath indexPathForRow:1 inSection:1];
         NSIndexPath *indexPathDatePicker = [NSIndexPath indexPathForRow:2 inSection:1];
-        [self.tableView insertRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPathDateRow];
+        cell.detailTextLabel.textColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPathDateRow] withRowAnimation:UITableViewRowAnimationNone];
+        [self.tableView deleteRowsAtIndexPaths:@[indexPathDatePicker] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
     }
 }
 //method này có tác dụng cập nhật giá trị dueDateLabel
@@ -136,12 +165,16 @@
         item.shouldRemind = self.switchControl.on;
         item.dueDate = _dueDate;
         
+        [item scheduleNotification];
+        
         [self.delegate itemDetailViewController:self didFinishAddingItem:item];
     } else {
         self.itemToEdit.text = self.textField.text;
         
         self.itemToEdit.shouldRemind = self.switchControl.on;
         self.itemToEdit.dueDate = _dueDate;
+        
+        [self.itemToEdit scheduleNotification];
         
         [self.delegate itemDetailViewController:self didFinishEditingItem:self.itemToEdit];
     }
